@@ -1,5 +1,4 @@
 package com.hotelkey.hkprinter;
 
-public class HKPrinter {
-
+public class PrinterConfigModel {
 }
