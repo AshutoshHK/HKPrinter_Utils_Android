@@ -19,21 +19,21 @@ public class HKGeneratePrint implements ConvertPdftoImageTask.ConvertImageCallBa
 
     }
 
-    enum PrintType {
+    public enum DocumentType {
         /*To check type of Printer*/
         PRINT_IMAGE, PRINT_DOC;
     }
 
     HKPrintGenerateCallBack hkPrintGenerateCallBack;
-    PrintType printType;
+    DocumentType documentType;
     Context context;
     String path;
     Printer printer;
     Bitmap parsedBitmap;
 
-    public HKGeneratePrint(HKPrintGenerateCallBack hkPrintGenerateCallBack, PrintType printType, Printer printer, String path, Context context) {
+    public HKGeneratePrint(HKPrintGenerateCallBack hkPrintGenerateCallBack, DocumentType documentType, Printer printer, String path, Context context) {
         this.hkPrintGenerateCallBack = hkPrintGenerateCallBack;
-        this.printType = printType;
+        this.documentType = documentType;
         this.printer = printer;
         this.path = path;
         this.context = context;
@@ -42,7 +42,7 @@ public class HKGeneratePrint implements ConvertPdftoImageTask.ConvertImageCallBa
     }
 
     private void parseDocument() {
-        if (printType == PrintType.PRINT_DOC) {
+        if (documentType == DocumentType.PRINT_DOC) {
             new ConvertPdftoImageTask(context, path, this);
         }
     }
