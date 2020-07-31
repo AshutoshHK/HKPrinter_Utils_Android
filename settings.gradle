@@ -1,0 +1,3 @@
+include ':hkprinter'
+include ':app'
+rootProject.name = "HKPrinter"
