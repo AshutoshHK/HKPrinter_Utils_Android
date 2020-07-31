@@ -1,4 +1,4 @@
-package com.hotelkey.hkprinter;
+package com.hotelkey.hkprinter.print;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,6 +10,8 @@ import com.epson.epos2.printer.Printer;
 import com.epson.epos2.printer.PrinterStatusInfo;
 import com.epson.epos2.printer.ReceiveListener;
 import com.epson.epos2.printer.StatusChangeListener;
+import com.hotelkey.hkprinter.HKPrinterProfiles;
+import com.hotelkey.hkprinter.PrinterHelperUtil;
 import com.hotelkey.hkprinter.printerStatus.PrinterStatusHandling;
 
 public class HKPrinterEpsonPrintAsyncTask extends AsyncTask<Boolean, Printer, Boolean> {
@@ -17,19 +19,13 @@ public class HKPrinterEpsonPrintAsyncTask extends AsyncTask<Boolean, Printer, Bo
     String TAG = this.getClass().getCanonicalName();
 
 
-    public interface HKPrintCallBack
-    {
 
-
-        void statusUpdate(String codeText, boolean b);
-    }
-
-    HKPrintCallBack printCallBack;
+    PrinterPrintCallBacks printCallBack;
     Context context;
     private final HKPrinterProfiles printerProfile;
     Bitmap bitMap;
 
-    public HKPrinterEpsonPrintAsyncTask(HKPrinterProfiles printerProfile, Bitmap bitmap, Context context, HKPrintCallBack printCallBack) {
+    public HKPrinterEpsonPrintAsyncTask(HKPrinterProfiles printerProfile, Bitmap bitmap, Context context, PrinterPrintCallBacks printCallBack) {
         this.printCallBack = printCallBack;
         this.context = context;
         this.printerProfile = printerProfile;
@@ -67,14 +63,14 @@ public class HKPrinterEpsonPrintAsyncTask extends AsyncTask<Boolean, Printer, Bo
             printer.setStatusChangeEventListener(new StatusChangeListener() {
                 @Override
                 public void onPtrStatusChange(Printer printer, int code) {
-                    printCallBack.statusUpdate(PrinterStatusHandling.getCodeText(code), false);
+                    printCallBack.statusUpdate(PrinterStatusHandling.getCodeText(code),printerProfile, false);
                 }
             });
             printer.setReceiveEventListener(new ReceiveListener() {
                 @Override
                 public void onPtrReceive(final Printer printer, int code, PrinterStatusInfo printerStatusInfo, String s) {
 
-                    printCallBack.statusUpdate(PrinterStatusHandling.getCodeText(code), true);
+                    printCallBack.statusUpdate(PrinterStatusHandling.getCodeText(code),printerProfile, true);
                     new Thread(new Runnable() {
                         @Override
                         public synchronized void run() {
@@ -88,7 +84,7 @@ public class HKPrinterEpsonPrintAsyncTask extends AsyncTask<Boolean, Printer, Bo
             return printer;
 
         } catch (Exception e) {
-            printCallBack.statusUpdate(e.getMessage(), false);
+            printCallBack.statusUpdate(e.getMessage(),printerProfile, false);
             // ShowMsg.showException(e, "Error", mContext);
             return null;
         }
@@ -121,7 +117,7 @@ public class HKPrinterEpsonPrintAsyncTask extends AsyncTask<Boolean, Printer, Bo
             }
 
         } catch (Exception e) {
-            printCallBack.statusUpdate(e.getMessage(), false);
+            printCallBack.statusUpdate(e.getMessage(),printerProfile, false);
             // ShowMsg.showException(e, "Error", mContext);
             return false;
         }
@@ -152,7 +148,7 @@ public class HKPrinterEpsonPrintAsyncTask extends AsyncTask<Boolean, Printer, Bo
             Log.d(TAG, "Printer send onStepperValueChange");
 
         } catch (Epos2Exception e) {
-            printCallBack.statusUpdate(PrinterStatusHandling.getInstance().getEposExceptionText(e.getErrorStatus()), false);
+            printCallBack.statusUpdate(PrinterStatusHandling.getInstance().getEposExceptionText(e.getErrorStatus()),printerProfile, false);
             // ShowMsg.showException(e, "Error", mContext);
             e.printStackTrace();
             Log.d(TAG, "Printer send onStepperValueChange failed  -> " + PrinterStatusHandling.getInstance().getEposExceptionText(e.getErrorStatus()));

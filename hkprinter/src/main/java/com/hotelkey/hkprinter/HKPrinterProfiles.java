@@ -1,8 +1,6 @@
 package com.hotelkey.hkprinter;
 
-import android.app.Activity;
-
-public class HKPrinter {
+public class HKPrinterProfiles {
 
     private String hostId;
     PrinterType printerType;
@@ -13,17 +11,17 @@ public class HKPrinter {
     String otherDetails;
     String id;
 
-    private static HKPrinter printer = null;
+    private static HKPrinterProfiles printer = null;
 
-    public HKPrinter()
+    public HKPrinterProfiles()
     {
         /*Default Constructor*/
     }
 
-    public static HKPrinter getInstance()
+    public static HKPrinterProfiles getInstance()
     {
         if (printer == null) {
-            printer = new HKPrinter();
+            printer = new HKPrinterProfiles();
         }
         return printer;
     }
@@ -92,11 +90,11 @@ public class HKPrinter {
         this.id = id;
     }
 
-    public static HKPrinter getPrinter() {
+    public static HKPrinterProfiles getPrinter() {
         return printer;
     }
 
-    public static void setPrinter(HKPrinter printer) {
-        HKPrinter.printer = printer;
+    public static void setPrinter(HKPrinterProfiles printer) {
+        HKPrinterProfiles.printer = printer;
     }
 }
